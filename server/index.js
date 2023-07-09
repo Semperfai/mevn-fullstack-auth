@@ -32,6 +32,19 @@ app.use("/static/", express.static(path.join(__dirname, "public")));
 app.use(errorHandker);
 
 //Routes
-app.use("./api/auth", require("./routes/api/auth"));
+app.use("/api/auth", require("./routes/api/auth"));
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+app.all("*", (req, res) => {
+  res.status(404);
+
+  if (req.accepts("json")) {
+    res.json({ error: "404 Not Found" });
+  } else {
+    res.type("text").send("404 Not Found");
+  }
+});
+
+mongoose.connection.once("open", () => {
+  console.log("DB connected");
+  app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+});
