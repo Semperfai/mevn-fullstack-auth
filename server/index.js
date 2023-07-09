@@ -48,3 +48,5 @@ mongoose.connection.once("open", () => {
   console.log("DB connected");
   app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 });
+
+console.log(process.env.ACCESS_TOKEN_SECRET);
