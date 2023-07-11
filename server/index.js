@@ -8,6 +8,7 @@ const corsOptions = require("./config/cors");
 const connectDB = require("./config/database");
 const credentials = require("./middleware/credentials");
 const errorHandker = require("./middleware/errors_handler");
+const authentication = require("./middleware/authentication");
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -24,6 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 //middleware for cookies
 app.use(cookieParser());
+//authentication
+app.use(authentication);
 
 //static files
 app.use("/static/", express.static(path.join(__dirname, "public")));
@@ -48,5 +51,3 @@ mongoose.connection.once("open", () => {
   console.log("DB connected");
   app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 });
-
-console.log(process.env.ACCESS_TOKEN_SECRET);

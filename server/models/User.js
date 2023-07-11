@@ -33,10 +33,15 @@ const UserSchema = Schema(
     refresh_token: String,
   },
   {
-    virtual: {
+    virtuals: {
       full_name: {
         get() {
           return this.first_name + " " + this.last_name;
+        },
+      },
+      id: {
+        get() {
+          return this._id;
         },
       },
     },

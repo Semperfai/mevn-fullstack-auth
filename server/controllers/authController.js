@@ -82,9 +82,9 @@ async function login(req, res) {
 
   res.cookie("refresh_token", refreshToken, {
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    // sameSite: "None",
+    sameSite: "None",
     secure: true,
+    maxAge: 24 * 60 * 60 * 1000,
   });
   res.json({ access_token: accessToken });
 }
@@ -100,7 +100,7 @@ async function logout(req, res) {
   if (!user) {
     res.clearCookie("refresh_token", {
       httpOnly: true,
-      // sameSite: "None",
+      sameSite: "None",
       secure: true,
     });
     return res.sendStatus(204);
@@ -111,17 +111,39 @@ async function logout(req, res) {
 
   res.clearCookie("refresh_token", {
     httpOnly: true,
-    // sameSite: "None",
+    sameSite: "None",
     secure: true,
   });
   res.sendStatus(204);
 }
 
 async function refresh(req, res) {
-  res.sendStatus(200);
+  const cookies = req.cookies;
+  if (!cookies.refresh_token) return res.sendStatus(401);
+
+  const refreshToken = cookies.refresh_token;
+
+  const user = await User.findOne({ refresh_token: refreshToken }).exec();
+
+  if (!user) return res.sendStatus(403);
+
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+    if (err || user.id !== decoded.id) return res.sendStatus(403);
+
+    const accessToken = jwt.sign(
+      { id: decoded.id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1800s" }
+    );
+
+    res.json({ access_token: accessToken });
+  });
 }
+
 async function user(req, res) {
-  res.sendStatus(200);
+  const user = req.user;
+
+  return res.status(200).json(user);
 }
 
 module.exports = { register, login, logout, refresh, user };
