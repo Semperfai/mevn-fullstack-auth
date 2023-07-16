@@ -1,8 +1,9 @@
 import { useAuthStore } from '@/stores/auth'
-import { axiosInstance } from '@/utils/axios'
+import { axiosInstance, axiosPrivateInstance } from '@/utils/axios'
+import type { AxiosInstance } from 'axios'
 import { watchEffect } from 'vue'
 
-export default function useApi() {
+export function useApiPrivate(): AxiosInstance {
   const authStore = useAuthStore()
 
   watchEffect(() => {
@@ -35,5 +36,9 @@ export default function useApi() {
     )
   })
 
+  return axiosPrivateInstance
+}
+
+export function useApi(): AxiosInstance {
   return axiosInstance
 }

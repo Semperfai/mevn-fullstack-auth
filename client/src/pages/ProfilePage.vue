@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -15,8 +15,6 @@ const getUser = async () => {
   await authStore.getUser()
 }
 
-await getUser()
-
 const logOut = async () => {
   await authStore
     .logout()
@@ -26,7 +24,11 @@ const logOut = async () => {
     .catch((e) => {
       console.log(e)
     })
-}
+  }
+
+  onMounted(async () => {
+    await getUser()
+  })
 </script>
 <template>
   <v-layout v-if="user">
