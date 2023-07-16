@@ -1,7 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import type { ILoginData } from '@/stores/types'
+import { useAuthStore } from '@/stores/auth'
+import { computed, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+//data
 const visible = ref<boolean>(false)
+const loginData = reactive<ILoginData>({
+  email: '',
+  password: ''
+})
+const errorMessage = ref<string>('')
+const authStore = useAuthStore()
+const router = useRouter()
+
+//computed
+const submitDisable = computed(() => !loginData.email || !loginData.password)
+
+//methods
+const signIn = async () => {
+  await authStore
+    .login(loginData)
+    .then(() => {
+      router.replace({ name: 'profile' })
+    })
+    .catch((err) => {
+      errorMessage.value = err.message
+    })
+}
 </script>
 <template>
   <v-container class="d-flex align-center justify-center w-100 h-100">
@@ -9,6 +35,7 @@ const visible = ref<boolean>(false)
       <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
       <v-text-field
+        v-model="loginData.email"
         density="compact"
         placeholder="Email address"
         prepend-inner-icon="mdi-email-outline"
@@ -29,6 +56,7 @@ const visible = ref<boolean>(false)
       </div>
 
       <v-text-field
+        v-model="loginData.password"
         :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
         :type="visible ? 'text' : 'password'"
         density="compact"
@@ -46,7 +74,17 @@ const visible = ref<boolean>(false)
         </v-card-text>
       </v-card>
 
-      <v-btn block class="mb-8" color="blue" size="large" variant="tonal"> Log In </v-btn>
+      <v-btn
+        @click="signIn"
+        :disabled="submitDisable"
+        block
+        class="mb-8"
+        color="blue"
+        size="large"
+        variant="tonal"
+      >
+        Log In
+      </v-btn>
 
       <v-card-text class="text-center">
         <router-link class="text-blue text-decoration-none" to="/signup" rel="noopener noreferrer">
