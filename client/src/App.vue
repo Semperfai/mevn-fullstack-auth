@@ -23,16 +23,16 @@ const menuItems = ref([
     </v-navigation-drawer>
 
     <v-toolbar app class="">
-      <span class="hidden-sm-and-up">
+      <span class="d-flex d-sm-none">
         <v-app-bar-nav-icon @click="sidebar = !sidebar"> </v-app-bar-nav-icon>
       </span>
-      <v-toolbar-title class="hidden-sm">
+      <v-toolbar-title class="d-none d-sm-flex">
         <router-link to="/" style="cursor: pointer">
           {{ appTitle }}
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
+      <v-toolbar-items class="d-none d-sm-flex">
         <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">
           <v-icon left dark>{{ item.icon }}</v-icon>
           {{ item.title }}
@@ -40,7 +40,7 @@ const menuItems = ref([
       </v-toolbar-items>
     </v-toolbar>
 
-    <v-container>
+    <v-container class="d-flex align-center justify-center w-100 h-100">
       <router-view></router-view>
     </v-container>
   </v-app>
