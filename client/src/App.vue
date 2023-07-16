@@ -7,7 +7,8 @@ const sidebar = ref(false)
 const menuItems = ref([
   { title: 'Home', path: '/', icon: 'home' },
   { title: 'Sign Up', path: '/signup', icon: 'face' },
-  { title: 'Sign In', path: '/signin', icon: 'lock_open' }
+  { title: 'Sign In', path: '/signin', icon: 'lock_open' },
+  { title: 'Profile', path: '/user', icon: 'lock_open' }
 ])
 </script>
 
@@ -39,10 +40,7 @@ const menuItems = ref([
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-
-    <v-container class="d-flex align-center justify-center w-100 h-100">
-      <router-view></router-view>
-    </v-container>
+    <router-view></router-view>
   </v-app>
 </template>
 
